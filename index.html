@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10101b">
+  <title>Quiz Quest — Solo Trivia</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --text: #f5f3ff;
+      --muted: #a5a2bc;
+      --purple: #a78bfa;
+      --panel: rgba(28, 27, 45, .88);
+      --line: rgba(255, 255, 255, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 12% 12%, rgba(124, 58, 237, .22), transparent 38%),
+        radial-gradient(ellipse at 88% 82%, rgba(14, 165, 233, .14), transparent 35%),
+        #10101b;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 28px clamp(20px, 5vw, 72px) 20px;
+    }
+
+    .topbar, .footer {
+      width: min(100%, 1120px);
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 750; letter-spacing: -.03em; }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(196, 181, 253, .3);
+      border-radius: 13px;
+      background: linear-gradient(145deg, rgba(167, 139, 250, .26), rgba(124, 58, 237, .13));
+      font-size: 20px;
+    }
+
+    .solo-badge, .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #d6ccff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .solo-badge {
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .035);
+      letter-spacing: .08em;
+    }
+
+    .solo-dot { width: 7px; height: 7px; border-radius: 50%; background: #a78bfa; box-shadow: 0 0 12px #a78bfa; }
+
+    main {
+      width: min(100%, 1120px);
+      flex: 1;
+      display: grid;
+      place-items: center;
+      margin: 32px auto;
+    }
+
+    .game-card {
+      position: relative;
+      width: min(100%, 690px);
+      overflow: hidden;
+      padding: clamp(25px, 5vw, 48px);
+      border: 1px solid rgba(255, 255, 255, .11);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .38), inset 0 1px rgba(255, 255, 255, .05);
+      backdrop-filter: blur(18px);
+    }
+
+    .game-card::before {
+      position: absolute;
+      top: 0;
+      left: 12%;
+      width: 76%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196, 181, 253, .7), transparent);
+      content: "";
+    }
+
+    .welcome { text-align: center; }
+    .welcome .eyebrow { justify-content: center; }
+    .hero-icon {
+      display: grid;
+      width: 76px;
+      height: 76px;
+      place-items: center;
+      margin: 4px auto 24px;
+      border: 1px solid rgba(196, 181, 253, .24);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(167, 139, 250, .2), rgba(124, 58, 237, .08));
+      font-size: 35px;
+      box-shadow: 0 12px 35px rgba(124, 58, 237, .16);
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 13px; font-size: clamp(36px, 7vw, 56px); letter-spacing: -.055em; line-height: 1.05; }
+    h1 span { color: var(--purple); }
+    .intro-copy { max-width: 425px; margin: 0 auto 28px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+
+    .game-facts {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .fact {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: #d0cde0;
+      background: rgba(255, 255, 255, .035);
+      font-size: 13px;
+    }
+
+    .primary-button {
+      display: inline-flex;
+      min-height: 54px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 25px;
+      border: 0;
+      border-radius: 14px;
+      color: #171222;
+      background: linear-gradient(100deg, #c4b5fd, #a78bfa 58%, #8b5cf6);
+      box-shadow: 0 8px 26px rgba(139, 92, 246, .26);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+
+    .primary-button:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 12px 32px rgba(139, 92, 246, .34); }
+    .primary-button:focus-visible, .answer:focus-visible { outline: 3px solid #e9d5ff; outline-offset: 3px; }
+
+    .quiz-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .question-count { color: var(--muted); font-size: 14px; font-weight: 650; }
+    .question-count strong { color: var(--text); }
+    .score-pill { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; color: #e6dcff; background: rgba(167, 139, 250, .09); font-size: 13px; font-weight: 700; }
+    .progress-track { height: 6px; overflow: hidden; margin-bottom: 32px; border-radius: 99px; background: rgba(255, 255, 255, .08); }
+    .progress-fill { width: 10%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #8b5cf6, #c4b5fd); transition: width .35s ease; }
+    .quiz-eyebrow { margin-bottom: 11px; color: var(--purple); }
+    h2 { margin-bottom: 24px; font-size: clamp(23px, 4.5vw, 31px); letter-spacing: -.035em; line-height: 1.3; }
+
+    .answers { display: grid; gap: 11px; }
+    .answer {
+      display: flex;
+      min-height: 58px;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 15px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 14px;
+      color: #e8e6f1;
+      background: rgba(255, 255, 255, .035);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .answer:hover:not(:disabled) { transform: translateX(3px); border-color: rgba(196, 181, 253, .48); background: rgba(167, 139, 250, .08); }
+    .answer:disabled { cursor: default; }
+    .answer-letter {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 10px;
+      color: #b9b5ca;
+      background: rgba(255, 255, 255, .045);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .answer.correct { border-color: rgba(74, 222, 128, .5); background: rgba(34, 197, 94, .11); }
+    .answer.correct .answer-letter { border-color: rgba(74, 222, 128, .4); color: #86efac; background: rgba(34, 197, 94, .15); }
+    .answer.incorrect { border-color: rgba(251, 113, 133, .4); background: rgba(244, 63, 94, .09); }
+    .answer.incorrect .answer-letter { border-color: rgba(251, 113, 133, .35); color: #fda4af; background: rgba(244, 63, 94, .12); }
+
+    .question-footer { display: flex; min-height: 58px; align-items: center; justify-content: space-between; gap: 14px; margin-top: 19px; }
+    .feedback { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .feedback.good { color: #86efac; }
+    .feedback.bad { color: #fda4af; }
+    .next-button { min-height: 46px; padding-inline: 18px; }
+
+    .result { text-align: center; }
+    .result .eyebrow { justify-content: center; }
+    .result-score {
+      display: grid;
+      width: 138px;
+      height: 138px;
+      place-content: center;
+      gap: 3px;
+      margin: 22px auto;
+      border: 1px solid rgba(196, 181, 253, .3);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(167, 139, 250, .2), rgba(167, 139, 250, .04) 70%);
+      box-shadow: 0 0 44px rgba(139, 92, 246, .13);
+    }
+    .result-score strong { font-size: 44px; letter-spacing: -.06em; }
+    .result-score span { color: var(--muted); font-size: 12px; }
+    .result-copy { max-width: 430px; margin: 0 auto 27px; color: var(--muted); line-height: 1.7; }
+
+    [hidden] { display: none !important; }
+    .footer { color: #77758b; font-size: 12px; }
+    .footer span:last-child { color: #a5a2bc; }
+
+    @media (max-width: 520px) {
+      .page { padding: 18px 16px 16px; }
+      .brand { font-size: 14px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .solo-badge { padding: 8px 10px; font-size: 10px; }
+      main { margin-block: 24px; }
+      .game-card { border-radius: 22px; }
+      .question-footer { align-items: flex-start; flex-direction: column; }
+      .next-button { width: 100%; }
+      .footer { gap: 12px; font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><span>Quiz Quest</span></div>
+      <div class="solo-badge"><span class="solo-dot" aria-hidden="true"></span> Solo mode</div>
+    </header>
+
+    <main>
+      <section class="game-card" aria-live="polite">
+        <div class="welcome" id="welcome">
+          <div class="hero-icon" aria-hidden="true">🧠</div>
+          <p class="eyebrow">Your next brain break</p>
+          <h1>Ready to <span>play?</span></h1>
+          <p class="intro-copy">Ten quick questions. Four possible answers. One chance to show what you know.</p>
+          <div class="game-facts" aria-label="Game details">
+            <span class="fact">✦ &nbsp;10 questions</span>
+            <span class="fact">◷ &nbsp;About 4 minutes</span>
+            <span class="fact">◎ &nbsp;Just you</span>
+          </div>
+          <button class="primary-button" id="start-button" type="button">Start the quiz <span aria-hidden="true">→</span></button>
+        </div>
+
+        <div id="quiz" hidden>
+          <div class="quiz-header">
+            <div class="question-count">QUESTION <strong id="question-number">1</strong> <span id="question-total">/ 10</span></div>
+            <div class="score-pill" aria-live="polite">✦ &nbsp;<span id="score">0</span> <span id="points-label">points</span></div>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <p class="eyebrow quiz-eyebrow">Choose your answer</p>
+          <h2 id="question-text" tabindex="-1"></h2>
+          <div class="answers" id="answers"></div>
+          <div class="question-footer">
+            <p class="feedback" id="feedback" role="status">Pick the answer you think is right.</p>
+            <button class="primary-button next-button" id="next-button" type="button" hidden>Next question <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+
+        <div class="result" id="result" hidden>
+          <div class="hero-icon" id="result-icon" aria-hidden="true">🏆</div>
+          <p class="eyebrow">Quiz complete</p>
+          <h1 id="result-title">Brilliant work!</h1>
+          <div class="result-score" aria-label="Your final score">
+            <strong id="final-score">0/10</strong>
+            <span>correct answers</span>
+          </div>
+          <p class="result-copy" id="result-copy"></p>
+          <button class="primary-button" id="play-again-button" type="button">Play again <span aria-hidden="true">↻</span></button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer"><span>A little curiosity goes a long way.</span><span>Made for one, made for fun.</span></footer>
+  </div>
+
+  <script>
+    const questionBank = [
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Venus", "Mars", "Jupiter", "Mercury"],
+        answer: 1
+      },
+      {
+        question: "What is the largest ocean on Earth?",
+        options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+        answer: 3
+      },
+      {
+        question: "How many sides does a hexagon have?",
+        options: ["Five", "Six", "Seven", "Eight"],
+        answer: 1
+      },
+      {
+        question: "Which animal is the tallest in the world?",
+        options: ["Elephant", "Ostrich", "Giraffe", "Camel"],
+        answer: 2
+      },
+      {
+        question: "What is the chemical symbol for gold?",
+        options: ["Ag", "Go", "Gd", "Au"],
+        answer: 3
+      },
+      {
+        question: "What is the capital city of Japan?",
+        options: ["Seoul", "Kyoto", "Tokyo", "Osaka"],
+        answer: 2
+      },
+      {
+        question: "Which is the largest mammal in the world?",
+        options: ["African elephant", "Blue whale", "Giraffe", "Hippopotamus"],
+        answer: 1
+      },
+      {
+        question: "What is 8 multiplied by 7?",
+        options: ["54", "56", "64", "58"],
+        answer: 1
+      },
+      {
+        question: "Which gas do plants absorb from the atmosphere?",
+        options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+        answer: 2
+      },
+      {
+        question: "What is the official language of Brazil?",
+        options: ["Spanish", "Portuguese", "French", "English"],
+        answer: 1
+      },
+      {
+        question: "Who was the first person to walk on the Moon?",
+        options: ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"],
+        answer: 2
+      },
+      {
+        question: "On which continent is the Sahara Desert?",
+        options: ["Asia", "Africa", "South America", "Australia"],
+        answer: 1
+      },
+      {
+        question: "At what temperature does water freeze in Celsius?",
+        options: ["0 degrees", "10 degrees", "32 degrees", "-10 degrees"],
+        answer: 0
+      },
+      {
+        question: "Which instrument has keys, pedals, and strings?",
+        options: ["Flute", "Drum kit", "Piano", "Trumpet"],
+        answer: 2
+      },
+      {
+        question: "What is the currency of Japan?",
+        options: ["Won", "Yuan", "Yen", "Baht"],
+        answer: 2
+      },
+      {
+        question: "Which is the fastest land animal?",
+        options: ["Lion", "Cheetah", "Horse", "Greyhound"],
+        answer: 1
+      },
+      {
+        question: "Who wrote Romeo and Juliet?",
+        options: ["Charles Dickens", "Jane Austen", "William Shakespeare", "Mark Twain"],
+        answer: 2
+      },
+      {
+        question: "How many hearts does an octopus have?",
+        options: ["One", "Two", "Three", "Four"],
+        answer: 2
+      },
+      {
+        question: "Which is the largest planet in our solar system?",
+        options: ["Saturn", "Earth", "Neptune", "Jupiter"],
+        answer: 3
+      },
+      {
+        question: "What is the smallest prime number?",
+        options: ["0", "1", "2", "3"],
+        answer: 2
+      }
+    ];
+    const questionsPerRound = 10;
+
+    const welcome = document.querySelector("#welcome");
+    const quiz = document.querySelector("#quiz");
+    const result = document.querySelector("#result");
+    const questionText = document.querySelector("#question-text");
+    const answers = document.querySelector("#answers");
+    const feedback = document.querySelector("#feedback");
+    const nextButton = document.querySelector("#next-button");
+    const progress = document.querySelector(".progress-track");
+    const progressFill = document.querySelector("#progress-fill");
+    let questionIndex = 0;
+    let score = 0;
+    let answered = false;
+    let questions = [];
+    let previousRound = [];
+
+    function chooseQuestions() {
+      const shuffled = [...questionBank];
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+
+      const round = shuffled.slice(0, questionsPerRound);
+      if (previousRound.length && round.every((question) => previousRound.includes(question))) {
+        round[round.length - 1] = shuffled.find((question) => !previousRound.includes(question));
+      }
+      return round;
+    }
+
+    function startGame() {
+      questionIndex = 0;
+      score = 0;
+      questions = chooseQuestions();
+      previousRound = questions;
+      document.querySelector("#score").textContent = "0";
+      document.querySelector("#points-label").textContent = "points";
+      welcome.hidden = true;
+      result.hidden = true;
+      quiz.hidden = false;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const current = questions[questionIndex];
+      answered = false;
+      document.querySelector("#question-number").textContent = String(questionIndex + 1);
+      document.querySelector("#question-total").textContent = `/ ${questions.length}`;
+      questionText.textContent = current.question;
+      progress.setAttribute("aria-valuenow", String(questionIndex + 1));
+      progress.setAttribute("aria-valuemax", String(questions.length));
+      progressFill.style.width = `${((questionIndex + 1) / questions.length) * 100}%`;
+      feedback.textContent = "Pick the answer you think is right.";
+      feedback.className = "feedback";
+      nextButton.hidden = true;
+      nextButton.innerHTML = questionIndex === questions.length - 1
+        ? 'See my results <span aria-hidden="true">→</span>'
+        : 'Next question <span aria-hidden="true">→</span>';
+      answers.replaceChildren();
+
+      current.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "answer";
+        button.type = "button";
+        button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65 + index)}</span><span></span>`;
+        button.lastElementChild.textContent = option;
+        button.addEventListener("click", () => selectAnswer(index));
+        answers.append(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (answered) return;
+      answered = true;
+      const current = questions[questionIndex];
+      const buttons = [...answers.querySelectorAll(".answer")];
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === current.answer) button.classList.add("correct");
+        if (index === selectedIndex && selectedIndex !== current.answer) button.classList.add("incorrect");
+      });
+
+      if (selectedIndex === current.answer) {
+        score += 1;
+        document.querySelector("#score").textContent = String(score);
+        document.querySelector("#points-label").textContent = score === 1 ? "point" : "points";
+        feedback.textContent = "That's right! Nice one.";
+        feedback.classList.add("good");
+      } else {
+        feedback.textContent = `Not quite — the answer is ${current.options[current.answer]}.`;
+        feedback.classList.add("bad");
+      }
+      nextButton.hidden = false;
+      nextButton.focus();
+    }
+
+    function showResults() {
+      quiz.hidden = true;
+      result.hidden = false;
+      document.querySelector("#final-score").textContent = `${score}/${questions.length}`;
+      const title = score === questions.length ? "Perfect score!" : score >= questions.length * 0.6 ? "Brilliant work!" : "Keep that curiosity!";
+      document.querySelector("#result-title").textContent = title;
+      document.querySelector("#result-icon").textContent = score === questions.length ? "🌟" : score >= questions.length * 0.6 ? "🏆" : "✨";
+      document.querySelector("#result-copy").textContent = score === questions.length
+        ? "A flawless round! You got every question right. Ready to make it a streak?"
+        : score >= questions.length * 0.6
+          ? "Great job! You have a sharp mind. Fancy another round to beat your score?"
+          : "Every round is a chance to learn something new. Give it another go and see how you do!";
+      document.querySelector("#play-again-button").focus();
+    }
+
+    document.querySelector("#start-button").addEventListener("click", startGame);
+    document.querySelector("#play-again-button").addEventListener("click", startGame);
+    nextButton.addEventListener("click", () => {
+      if (questionIndex < questions.length - 1) {
+        questionIndex += 1;
+        showQuestion();
+        questionText.focus();
+      } else {
+        showResults();
+      }
+    });
+  </script>
+</body>
+</html>
