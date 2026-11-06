@@ -49,6 +49,8 @@
     }
 
     .brand { display: flex; align-items: center; gap: 11px; font-weight: 750; letter-spacing: -.03em; }
+    .brand-copy { display: grid; gap: 2px; }
+    .developer-credit { color: var(--muted); font-size: 11px; font-weight: 550; letter-spacing: 0; }
     .brand-mark {
       display: grid;
       width: 38px;
@@ -240,7 +242,7 @@
 
     [hidden] { display: none !important; }
     .footer { color: #77758b; font-size: 12px; }
-    .footer span:last-child { color: #a5a2bc; }
+    .footer a { color: #a5a2bc; text-decoration: underline; text-underline-offset: 3px; }
 
     @media (max-width: 520px) {
       .page { padding: 18px 16px 16px; }
@@ -262,7 +264,10 @@
 <body>
   <div class="page">
     <header class="topbar">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><span>Quiz Quest</span></div>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span class="brand-copy"><span>Quiz Quest</span><span class="developer-credit">Developed by Abdurrazak_Muktar</span></span>
+      </div>
       <div class="solo-badge"><span class="solo-dot" aria-hidden="true"></span> Solo mode</div>
     </header>
 
@@ -272,7 +277,7 @@
           <div class="hero-icon" aria-hidden="true">🧠</div>
           <p class="eyebrow">Your next brain break</p>
           <h1>Ready to <span>play?</span></h1>
-          <p class="intro-copy">Ten quick questions. Four possible answers. One chance to show what you know.</p>
+          <p class="intro-copy">Ten clear, balanced general knowledge questions from around the world. Four possible answers. One chance to show what you know.</p>
           <div class="game-facts" aria-label="Game details">
             <span class="fact">✦ &nbsp;10 questions</span>
             <span class="fact">◷ &nbsp;About 4 minutes</span>
@@ -316,109 +321,60 @@
   </div>
 
   <script>
-    const questionBank = [
-      {
-        question: "Which planet is known as the Red Planet?",
-        options: ["Venus", "Mars", "Jupiter", "Mercury"],
-        answer: 1
-      },
-      {
-        question: "What is the largest ocean on Earth?",
-        options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
-        answer: 3
-      },
-      {
-        question: "How many sides does a hexagon have?",
-        options: ["Five", "Six", "Seven", "Eight"],
-        answer: 1
-      },
-      {
-        question: "Which animal is the tallest in the world?",
-        options: ["Elephant", "Ostrich", "Giraffe", "Camel"],
-        answer: 2
-      },
-      {
-        question: "What is the chemical symbol for gold?",
-        options: ["Ag", "Go", "Gd", "Au"],
-        answer: 3
-      },
-      {
-        question: "What is the capital city of Japan?",
-        options: ["Seoul", "Kyoto", "Tokyo", "Osaka"],
-        answer: 2
-      },
-      {
-        question: "Which is the largest mammal in the world?",
-        options: ["African elephant", "Blue whale", "Giraffe", "Hippopotamus"],
-        answer: 1
-      },
-      {
-        question: "What is 8 multiplied by 7?",
-        options: ["54", "56", "64", "58"],
-        answer: 1
-      },
-      {
-        question: "Which gas do plants absorb from the atmosphere?",
-        options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
-        answer: 2
-      },
-      {
-        question: "What is the official language of Brazil?",
-        options: ["Spanish", "Portuguese", "French", "English"],
-        answer: 1
-      },
-      {
-        question: "Who was the first person to walk on the Moon?",
-        options: ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"],
-        answer: 2
-      },
-      {
-        question: "On which continent is the Sahara Desert?",
-        options: ["Asia", "Africa", "South America", "Australia"],
-        answer: 1
-      },
-      {
-        question: "At what temperature does water freeze in Celsius?",
-        options: ["0 degrees", "10 degrees", "32 degrees", "-10 degrees"],
-        answer: 0
-      },
-      {
-        question: "Which instrument has keys, pedals, and strings?",
-        options: ["Flute", "Drum kit", "Piano", "Trumpet"],
-        answer: 2
-      },
-      {
-        question: "What is the currency of Japan?",
-        options: ["Won", "Yuan", "Yen", "Baht"],
-        answer: 2
-      },
-      {
-        question: "Which is the fastest land animal?",
-        options: ["Lion", "Cheetah", "Horse", "Greyhound"],
-        answer: 1
-      },
-      {
-        question: "Who wrote Romeo and Juliet?",
-        options: ["Charles Dickens", "Jane Austen", "William Shakespeare", "Mark Twain"],
-        answer: 2
-      },
-      {
-        question: "How many hearts does an octopus have?",
-        options: ["One", "Two", "Three", "Four"],
-        answer: 2
-      },
-      {
-        question: "Which is the largest planet in our solar system?",
-        options: ["Saturn", "Earth", "Neptune", "Jupiter"],
-        answer: 3
-      },
-      {
-        question: "What is the smallest prime number?",
-        options: ["0", "1", "2", "3"],
-        answer: 2
-      }
-    ];
     const questionsPerRound = 10;
+    const questionBank = [
+      { question: "What is the capital city of Japan?", options: ["Seoul", "Tokyo", "Bangkok", "Beijing"], answer: 1 },
+      { question: "What is the capital city of Australia?", options: ["Sydney", "Canberra", "Melbourne", "Perth"], answer: 1 },
+      { question: "What is the capital city of Kenya?", options: ["Lagos", "Nairobi", "Accra", "Cairo"], answer: 1 },
+      { question: "What is the capital city of Egypt?", options: ["Cairo", "Rabat", "Tunis", "Khartoum"], answer: 0 },
+      { question: "What is the capital city of Thailand?", options: ["Phuket", "Bangkok", "Chiang Mai", "Pattaya"], answer: 1 },
+      { question: "Which language is mainly spoken in Thailand?", options: ["Vietnamese", "Thai", "Malay", "Khmer"], answer: 1 },
+      { question: "Which is the largest ocean on Earth?", options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"], answer: 2 },
+      { question: "On which continent is the Sahara Desert?", options: ["Asia", "Africa", "Antarctica", "Europe"], answer: 1 },
+      { question: "What is the highest mountain above sea level?", options: ["Mount Kilimanjaro", "Mount Everest", "Mont Blanc", "Mount Fuji"], answer: 1 },
+      { question: "Which country is home to the Great Barrier Reef?", options: ["Australia", "India", "South Africa", "Madagascar"], answer: 0 },
+      { question: "Which country is home to the ancient city of Petra?", options: ["Jordan", "Greece", "Morocco", "Turkey"], answer: 0 },
+      { question: "In which country is the Taj Mahal?", options: ["Pakistan", "India", "Nepal", "Bangladesh"], answer: 1 },
+      { question: "Which sea lies between Europe and Africa?", options: ["The Baltic Sea", "The Mediterranean Sea", "The Red Sea", "The North Sea"], answer: 1 },
+      { question: "What is the currency of Japan?", options: ["Won", "Yuan", "Yen", "Baht"], answer: 2 },
+      { question: "Which country is famous for its canals and the city of Venice?", options: ["Spain", "Italy", "Portugal", "Croatia"], answer: 1 },
+      { question: "What is the chemical formula for water?", options: ["CO2", "H2O", "O2", "NaCl"], answer: 1 },
+      { question: "Which gas do plants absorb from the air to make food?", options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], answer: 2 },
+      { question: "At sea level, about what temperature does water boil in Celsius?", options: ["50 degrees", "80 degrees", "100 degrees", "120 degrees"], answer: 2 },
+      { question: "How many planets are in our solar system?", options: ["Seven", "Eight", "Nine", "Ten"], answer: 1 },
+      { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Mercury"], answer: 1 },
+      { question: "Which is the largest planet in our solar system?", options: ["Saturn", "Earth", "Neptune", "Jupiter"], answer: 3 },
+      { question: "What is the closest star to Earth?", options: ["Sirius", "The Sun", "Polaris", "Proxima Centauri"], answer: 1 },
+      { question: "What causes day and night on Earth?", options: ["Earth orbiting the Sun", "The Moon orbiting Earth", "Earth spinning on its axis", "Clouds covering the Sun"], answer: 2 },
+      { question: "What is the name of Earth's natural satellite?", options: ["The Moon", "Phobos", "Europa", "Titan"], answer: 0 },
+      { question: "What is the chemical symbol for gold?", options: ["Ag", "Au", "Fe", "Go"], answer: 1 },
+      { question: "Which gas makes up most of Earth's atmosphere?", options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], answer: 2 },
+      { question: "Which animal is the largest mammal in the world?", options: ["African elephant", "Blue whale", "Giraffe", "Hippopotamus"], answer: 1 },
+      { question: "Which is the tallest land animal?", options: ["Elephant", "Ostrich", "Giraffe", "Camel"], answer: 2 },
+      { question: "Which land animal is known for being the fastest runner?", options: ["Lion", "Cheetah", "Horse", "Leopard"], answer: 1 },
+      { question: "How many hearts does an octopus have?", options: ["One", "Two", "Three", "Four"], answer: 2 },
+      { question: "Which mammal lays eggs?", options: ["Koala", "Platypus", "Dolphin", "Bat"], answer: 1 },
+      { question: "What is a group of lions called?", options: ["A pack", "A pride", "A herd", "A flock"], answer: 1 },
+      { question: "How many sides does an octagon have?", options: ["Six", "Seven", "Eight", "Nine"], answer: 2 },
+      { question: "What is 12 multiplied by 8?", options: ["86", "92", "96", "108"], answer: 2 },
+      { question: "What is the square root of 144?", options: ["10", "12", "14", "16"], answer: 1 },
+      { question: "What is one quarter written as a percentage?", options: ["20%", "25%", "40%", "50%"], answer: 1 },
+      { question: "Which number is a prime number?", options: ["9", "15", "17", "21"], answer: 2 },
+      { question: "How many degrees are in a right angle?", options: ["45", "90", "180", "360"], answer: 1 },
+      { question: "Which instrument usually has 88 keys?", options: ["Piano", "Violin", "Flute", "Harp"], answer: 0 },
+      { question: "How many strings does a standard violin have?", options: ["Three", "Four", "Five", "Six"], answer: 1 },
+      { question: "Who wrote the play Romeo and Juliet?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Oscar Wilde"], answer: 1 },
+      { question: "Who wrote The Hobbit?", options: ["J. R. R. Tolkien", "C. S. Lewis", "Lewis Carroll", "Roald Dahl"], answer: 0 },
+      { question: "Which composer wrote the famous Fifth Symphony?", options: ["Mozart", "Beethoven", "Chopin", "Vivaldi"], answer: 1 },
+      { question: "What is the traditional Japanese garment called?", options: ["Sari", "Kimono", "Poncho", "Kilt"], answer: 1 },
+      { question: "Which sport is played at the FIFA World Cup?", options: ["Rugby", "Football (soccer)", "Cricket", "Tennis"], answer: 1 },
+      { question: "In tennis, what word means a score of zero?", options: ["Nil", "Love", "Blank", "Duck"], answer: 1 },
+      { question: "How many pieces does each player start with in chess?", options: ["12", "14", "16", "18"], answer: 2 },
+      { question: "How often are the Summer Olympic Games normally held?", options: ["Every two years", "Every three years", "Every four years", "Every five years"], answer: 2 },
+      { question: "Which material is made by bees and used to store honey?", options: ["Silk", "Wax", "Cotton", "Resin"], answer: 1 },
+      { question: "What is the name for water falling from clouds as rain, snow, or hail?", options: ["Evaporation", "Condensation", "Precipitation", "Collection"], answer: 2 },
+      { question: "Which instrument measures temperature?", options: ["Barometer", "Thermometer", "Compass", "Telescope"], answer: 1 }
+    ];
 
     const welcome = document.querySelector("#welcome");
     const quiz = document.querySelector("#quiz");
@@ -433,27 +389,42 @@
     let score = 0;
     let answered = false;
     let questions = [];
+    let questionPool = [];
     let previousRound = [];
 
-    function chooseQuestions() {
-      const shuffled = [...questionBank];
+    function shuffle(items) {
+      const shuffled = [...items];
       for (let index = shuffled.length - 1; index > 0; index -= 1) {
         const randomIndex = Math.floor(Math.random() * (index + 1));
         [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
       }
+      return shuffled;
+    }
 
-      const round = shuffled.slice(0, questionsPerRound);
-      if (previousRound.length && round.every((question) => previousRound.includes(question))) {
-        round[round.length - 1] = shuffled.find((question) => !previousRound.includes(question));
+    function shuffleAnswers(question) {
+      const correctAnswer = question.options[question.answer];
+      const options = shuffle(question.options);
+      return { ...question, options, answer: options.indexOf(correctAnswer) };
+    }
+
+    function chooseQuestions() {
+      if (questionPool.length < questionsPerRound) {
+        const previousQuestions = new Set(previousRound);
+        const remainingQuestions = questionBank.filter((question) =>
+          !previousQuestions.has(question) && !questionPool.includes(question)
+        );
+        questionPool = shuffle([...questionPool, ...remainingQuestions]);
       }
-      return round;
+
+      const round = questionPool.splice(0, questionsPerRound);
+      previousRound = round;
+      return round.map(shuffleAnswers);
     }
 
     function startGame() {
       questionIndex = 0;
       score = 0;
       questions = chooseQuestions();
-      previousRound = questions;
       document.querySelector("#score").textContent = "0";
       document.querySelector("#points-label").textContent = "points";
       welcome.hidden = true;
